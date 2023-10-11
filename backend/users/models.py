@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import UniqueConstraint
 from .validators import validate_username
 from constants import (EMAIL_MAX_LENGTH, FIRST_NAME_MAX_LENGTH,
                        LAST_NAME_MAX_LENGTH, USERNAME_MAX_LENGTH)
@@ -30,3 +31,26 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class Subscription(models.Model):
+    """Модель создания подписки на автора"""
+
+    user = models.ForeignKey(CustomUser,
+                             on_delete=models.CASCADE,
+                             verbose_name='Подписчик',
+                             related_name='subscriber')
+    author = models.ForeignKey(CustomUser,
+                               on_delete=models.CASCADE,
+                               verbose_name='Автор, на которого подписались',
+                               related_name='subscribed_author')
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        constraints = [
+            UniqueConstraint(
+                    fields=('user', 'author'),
+                    name='subscription_user_to_author'
+            )
+        ]
