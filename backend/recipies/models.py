@@ -54,6 +54,7 @@ class Tag(models.Model):
 
 class Recipe(models.Model):
     """Модель рецепта"""
+
     tags = models.ManyToManyField(Tag,
                                   through='RecipeTag',
                                   related_name='tags',
@@ -70,7 +71,8 @@ class Recipe(models.Model):
     name = models.CharField('Название рецепта',
                             max_length=RECIPE_MAX_LENGTH)
     text = models.TextField('Описание рецепта')
-    cooking_time = models.IntegerField(blank=False,
+    cooking_time = models.IntegerField('Время приготовления рецепта',
+                                       blank=False,
                                        validators=[validate_cooking_time])
     pub_date = models.DateTimeField('Дата публикации',
                                     auto_now_add=True)
@@ -162,7 +164,7 @@ class Favorite(models.Model):
 
     class Meta:
         verbose_name = 'Избранное'
-        verbose_name_plural = 'Избанное'
+        verbose_name_plural = 'Избранное'
         constraints = [
             UniqueConstraint(
                 fields=['user', 'recipe'],

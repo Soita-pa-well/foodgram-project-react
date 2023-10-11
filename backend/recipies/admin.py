@@ -1,6 +1,17 @@
 from django.contrib import admin
-from .models import Ingredient, Tag, Recipe, ShoppingCart, Favorite
+from .models import (Ingredient, Tag, Recipe, ShoppingCart,
+                     Favorite, IngridientInRecipe, RecipeTag)
 from constants import EMPTY_VALUE
+
+
+class IngredientInRecipeInline(admin.TabularInline):
+    """Модель для добавления ингридиентов в рецепт в админке"""
+    model = IngridientInRecipe
+
+
+class RecipeTagInLine(admin.TabularInline):
+    """Модель для добавления тегов в рецепт в админке"""
+    model = RecipeTag
 
 
 @admin.register(Ingredient)
@@ -10,7 +21,7 @@ class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit')
     search_fields = ('name',)
     list_filter = ('name',)
-    # inlines = (IngredientRecipeInline,)
+    inlines = (IngredientInRecipeInline,)
     empty_value_display = EMPTY_VALUE
 
 
@@ -32,6 +43,7 @@ class RecipeAdmin(admin.ModelAdmin):
                     'text', 'cooking_time', 'pub_date')
     search_fields = ('name', 'author', 'tags', 'ingridients')
     list_filter = ('author', 'name', 'tags')
+    inlines = (IngredientInRecipeInline, RecipeTagInLine)
     empty_value_display = EMPTY_VALUE
 
 
