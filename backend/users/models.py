@@ -8,9 +8,6 @@ from constants import (EMAIL_MAX_LENGTH, FIRST_NAME_MAX_LENGTH,
 class CustomUser(AbstractUser):
     """Кастомная модель пользователя."""
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
-
     email = models.EmailField('Почта пользователя',
                               max_length=EMAIL_MAX_LENGTH,
                               unique=True)
@@ -23,6 +20,8 @@ class CustomUser(AbstractUser):
     username = models.CharField('Псевдоним пользователя',
                                 max_length=USERNAME_MAX_LENGTH,
                                 validators=[validate_username])
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     class Meta:
         verbose_name = 'Пользователь'
