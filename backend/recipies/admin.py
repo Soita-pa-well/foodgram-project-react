@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Ingredient, Tag, Recipe, ShoppingCart, Favorite
+from .models import Ingredient, Tag, Recipe, ShoppingCart, Favorite
 from constants import EMPTY_VALUE
 
 
@@ -28,7 +28,7 @@ class TagAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
     """Модель Recipe в админке."""
 
-    list_display = ('name', 'tags', 'author', 'ingridients',
+    list_display = ('name', 'author',
                     'text', 'cooking_time', 'pub_date')
     search_fields = ('name', 'author', 'tags', 'ingridients')
     list_filter = ('author', 'name', 'tags')

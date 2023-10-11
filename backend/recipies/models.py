@@ -4,7 +4,7 @@ from django.db.models import UniqueConstraint
 from constants import (INGRIDIENT_MAX_LENHTH, MEAS_UNIT_MAX_LENHTH,
                        TAG_NAME_MAX_LENGTH, COLOR_MAX_LENGTH, SLUG_MAX_LENGTH,
                        RECIPE_MAX_LENGTH)
-from validators import validate_cooking_time, validate_minimum_amount
+from .validators import validate_cooking_time, validate_minimum_amount
 
 
 class Ingredient(models.Model):
@@ -65,8 +65,8 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(Ingredient,
                                          through='IngridientInRecipe',
                                          verbose_name='Ингредиенты')
-    image = models.ImageField('Изображение рецепта',
-                              upload_to='recipies/images/')
+    # image = models.ImageField('Изображение рецепта',
+    #                          upload_to='recipies/images/')
     name = models.CharField('Название рецепта',
                             max_length=RECIPE_MAX_LENGTH)
     text = models.TextField('Описание рецепта')
@@ -137,6 +137,8 @@ class ShoppingCart(models.Model):
                                verbose_name='Рецепт')
 
     class Meta:
+        verbose_name = 'Список покупок'
+        verbose_name_plural = 'Список покупок'
         constraints = [
             UniqueConstraint(
                 fields=['user', 'recipe'],
@@ -153,14 +155,14 @@ class Favorite(models.Model):
 
     user = models.ForeignKey(CustomUser,
                              on_delete=models.CASCADE,
-                             related_name='favorites',
-                             verbose_name='Пользователь')
+                             related_name='favorites')
     recipe = models.ForeignKey(Recipe,
                                on_delete=models.CASCADE,
-                               related_name='favorites',
-                               verbose_name='Рецепт')
+                               related_name='favorites')
 
     class Meta:
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избанное'
         constraints = [
             UniqueConstraint(
                 fields=['user', 'recipe'],
