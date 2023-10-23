@@ -12,5 +12,5 @@ def validate_cooking_time(value):
 def validate_minimum_amount(value):
     if value < MINIMUM_AMOUNT:
         raise ValidationError(
-            'Рецепт не может быть существовать без ингридиентов'
+            'Рецепт не может существовать без ингридиентов'
         )

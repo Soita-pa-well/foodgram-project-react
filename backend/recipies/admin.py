@@ -46,6 +46,9 @@ class RecipeAdmin(admin.ModelAdmin):
     inlines = (IngredientInRecipeInline, RecipeTagInLine)
     empty_value_display = EMPTY_VALUE
 
+    def count_favorites(self, obj):
+        return obj.favorites.count()
+
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):

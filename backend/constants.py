@@ -11,4 +11,11 @@ SLUG_MAX_LENGTH = 200
 RECIPE_MAX_LENGTH = 200
 MINIMUM_COOKING_TIME = 1
 MINIMUM_AMOUNT = 1
+CSV_PATH = ('/Users/'
+            'Panisher/'
+            'Desktop/'
+            'projects/'
+            'foodgram-project-react/'
+            'data/'
+            'ingredients.csv')
 INVALID_SYMBOLS = r'[a-zA-Z0-9.@+-_]'
