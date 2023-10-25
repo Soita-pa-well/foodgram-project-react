@@ -18,7 +18,7 @@ class Ingredient(models.Model):
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
-        ordering = ['name']
+        ordering = ['id']
         constraints = [
             UniqueConstraint(
                 fields=['name', 'measurement_unit'],
@@ -66,8 +66,9 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(Ingredient,
                                          through='IngridientInRecipe',
                                          verbose_name='Ингредиенты')
-    # image = models.ImageField('Изображение рецепта',
-    #                          upload_to='recipies/images/')
+    image = models.ImageField('Изображение рецепта',
+                              upload_to='recipies/images/',
+                              null=True)
     name = models.CharField('Название рецепта',
                             max_length=RECIPE_MAX_LENGTH)
     text = models.TextField('Описание рецепта')
@@ -103,8 +104,7 @@ class IngridientInRecipe(models.Model):
             UniqueConstraint(
                 fields=['recipe', 'ingredient'],
                 name='recipe_ingredient'
-            )
-        ]
+            )]
 
 
 class RecipeTag(models.Model):

@@ -8,4 +8,8 @@ def validate_username(value):
     if banned_chars:
         raise ValidationError(
             f'Нельзя использовать символы: {banned_chars} в имени')
+    if value.lower() == 'me':
+        raise ValidationError(
+            'Нельзя использовать значение me в имени'
+        )
     return value
