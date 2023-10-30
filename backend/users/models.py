@@ -54,3 +54,6 @@ class Subscription(models.Model):
                     name='subscription_user_to_author'
             )
         ]
+
+    def __str__(self):
+        return f'{self.user} подписался на {self.author}'
