@@ -68,7 +68,8 @@ class Recipe(models.Model):
                                          verbose_name='Ингредиенты')
     image = models.ImageField('Изображение рецепта',
                               upload_to='recipies/images/',
-                              null=True)
+                              null=True,
+                              blank=True)
     name = models.CharField('Название рецепта',
                             max_length=RECIPE_MAX_LENGTH)
     text = models.TextField('Описание рецепта')
@@ -105,7 +106,7 @@ class IngridientInRecipe(models.Model):
         constraints = [
             UniqueConstraint(
                 fields=['recipe', 'ingredient'],
-                name='recipe_ingredient'
+                name='ingredient_in_recipe'
             )]
 
 
