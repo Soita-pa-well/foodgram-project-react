@@ -23,4 +23,4 @@ class TagViewSet(viewsets.ModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = RecipeShowSerializer
+    serializer_class = RecipeCreateSerializer
