@@ -190,34 +190,29 @@ class HelpCreateSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
+# class ShoppingCartSerializer(serializers.ModelSerializer):
+#     """Сериализатор модели корзины покупок"""
+
+#     class Meta:
+#         model = ShoppingCart
+#         fields = ('user', 'recipe')
+
+#     def to_representation(self, context, instance):
+#         request = context.get('request')
+#         context = {'request': request}
+#         help_create_serializer = HelpCreateSerializer(context,
+#                                                       instance.recipe)
+#         return help_create_serializer.data
 class ShoppingCartSerializer(serializers.ModelSerializer):
-    """Сериализатор модели корзины покупок"""
-
     class Meta:
-        model = ShoppingCart
-        fields = ('user', 'recipe')
-
-    def to_representation(self, context, instance):
-        request = context.get('request')
-        context = {'request': request}
-        help_create_serializer = HelpCreateSerializer(context,
-                                                      instance.recipe)
-        return help_create_serializer.data
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
-    """Сериализатор модели избранного"""
-
     class Meta:
-        model = Favorite
-        fields = ('user', 'recipe')
-
-    def to_representation(self, context, instance):
-        request = context.get('request')
-        context = {'request': request}
-        help_create_serializer = HelpCreateSerializer(context,
-                                                      instance.recipe)
-        return help_create_serializer.data
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time', )
 
 
 class UserSubscriptionSerializer(serializers.ModelSerializer):
@@ -242,23 +237,3 @@ class UserSubscriptionSerializer(serializers.ModelSerializer):
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj).count()
-
-    # recipes = serializers.SerializerMethodField(read_only=True)
-    # recipes_count = serializers.SerializerMethodField(read_only=True)
-
-    # class Meta:
-    #     model = User
-    #     fields = ('email', 'id', 'username', 'first_name', 'last_name',
-    #               'is_subscribed', 'recipes', 'recipes_count',)
-
-    # def get_recipes(self, obj):
-    #     request = self.context.get('request')
-    #     recipes = obj.recipes.all()
-    #     recipes_limit = request.query_params.get('recipes_limit')
-    #     if recipes_limit:
-    #         recipes = recipes[:int(recipes_limit)]
-    #     return RecipeShortSerializer(recipes, many=True).data
-
-    # @staticmethod
-    # def get_recipes_count(obj):
-    #     return obj.recipes.count()

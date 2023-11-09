@@ -19,3 +19,4 @@ CSV_PATH = ('/Users/'
             'data/'
             'ingredients.csv')
 INVALID_SYMBOLS = r'[a-zA-Z0-9.@+-_]'
+DEJAVUSANS_PATH = '/Users/Panisher/Desktop/DejaVu_Sans/DejaVuSans.ttf'
