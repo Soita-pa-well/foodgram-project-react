@@ -5,7 +5,8 @@ from users.models import CustomUser, Subscription
 from api.serializers import (IngridientsSerializer, TagSerializer,
                              RecipeCreateSerializer, CustomUserSerializer,
                              RecipeShowSerializer, UserSubscriptionSerializer,
-                             FavoriteSerializer, ShoppingCartSerializer)
+                             FavoriteSerializer, ShoppingCartSerializer,
+                             PasswordSerializer)
 from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.decorators import action
@@ -20,6 +21,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from constants import DEJAVUSANS_PATH
+from django.contrib.auth.hashers import check_password
 
 pdfmetrics.registerFont(TTFont('DejaVuSans', DEJAVUSANS_PATH))
 
@@ -28,6 +30,16 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    @action(
+            detail=False,
+            methods=['get'],
+            permission_classes=(IsAuthenticated,)
+    )
+    def me(self, request):
+        user = CustomUser.objects.get(username=request.user.username)
+        serializer = CustomUserSerializer(user, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
             detail=False,
@@ -78,6 +90,27 @@ class CustomUserViewSet(viewsets.ModelViewSet):
             return Response(f'Вы не можете отменить подписку на {author},'
                             f'потому что не подписаны на него',
                             status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+        detail=False,
+        methods=['post'],
+        permission_classes=(IsAuthenticated,)
+    )
+    def set_password(self, request, pk=None):
+        user = self.request.user
+        serializer = PasswordSerializer(data=request.data,
+                                        context={'request': request})
+        if serializer.is_valid(raise_exception=True):
+            new_password = serializer.data['new_password']
+            if user.check_password(new_password):
+                return Response(data='Новый пароль не должен совпадать с '
+                                'предыдущим',
+                                status=status.HTTP_400_BAD_REQUEST)
+            user.set_password(new_password)
+            user.save()
+            return Response(data='Пароль изменен',
+                            status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class IngredientsViewSet(viewsets.ModelViewSet):

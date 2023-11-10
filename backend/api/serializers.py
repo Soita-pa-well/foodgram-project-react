@@ -14,15 +14,8 @@ class CustomUserSerializer(UserSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'first_name', 'last_name', 'is_subscribed')
-
-    # def get_is_subscribed(self, obj):
-    #     request = self.context.get('request')
-    #     if request is not None and request.user.is_authenticated:
-    #         item = Subscription.objects.filter(user=request.user,
-    #                                            author=obj).exists()
-    #         return item
-    #     return False
+        fields = ('email', 'id', 'username', 'first_name', 'last_name',
+                  'is_subscribed')
 
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
@@ -37,6 +30,11 @@ class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = CustomUser
         fields = ('email', 'username', 'first_name', 'last_name', 'password')
+
+
+class PasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
 
 
 class IngridientsSerializer(serializers.ModelSerializer):
@@ -218,6 +216,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
 class UserSubscriptionSerializer(serializers.ModelSerializer):
     """"Cериализатор подписки на автора"""
 
+    is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField(read_only=True)
     recipes_count = serializers.SerializerMethodField(read_only=True)
 
@@ -225,6 +224,12 @@ class UserSubscriptionSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ('email', 'id', 'username', 'first_name', 'last_name',
                   'is_subscribed', 'recipes', 'recipes_count',)
+
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Subscription.objects.filter(user=user, author=obj.id).exists()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
