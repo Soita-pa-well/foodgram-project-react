@@ -3,7 +3,7 @@ import csv
 from django.core.management.base import BaseCommand
 
 from recipies.models import Ingredient
-from backend.constants import CSV_PATH
+from constants import CSV_PATH
 
 
 class Command(BaseCommand):

@@ -11,12 +11,6 @@ SLUG_MAX_LENGTH = 200
 RECIPE_MAX_LENGTH = 200
 MINIMUM_COOKING_TIME = 1
 MINIMUM_AMOUNT = 1
-CSV_PATH = ('/Users/'
-            'Panisher/'
-            'Desktop/'
-            'projects/'
-            'foodgram-project-react/'
-            'data/'
-            'ingredients.csv')
+CSV_PATH = '/app/data/ingredients.csv'
 INVALID_SYMBOLS = r'[a-zA-Z0-9.@+-_]'
-DEJAVUSANS_PATH = '/Users/Panisher/Desktop/DejaVu_Sans/DejaVuSans.ttf'
+DEJAVUSANS_PATH = '/app/DejaVu_Sans/DejaVuSans.ttf'

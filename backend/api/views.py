@@ -5,10 +5,9 @@ from users.models import CustomUser, Subscription
 from api.serializers import (IngridientsSerializer, TagSerializer,
                              RecipeCreateSerializer, CustomUserSerializer,
                              RecipeShowSerializer, UserSubscriptionSerializer,
-                             FavoriteSerializer, ShoppingCartSerializer,
-                             PasswordSerializer)
-from rest_framework.permissions import (AllowAny, IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+                            # FavoriteSerializer, ShoppingCartSerializer,
+                             PasswordSerializer, HelpCreateSerializer)
+from rest_framework.permissions import (AllowAny, IsAuthenticated)
 from rest_framework.decorators import action
 from django.http import HttpResponse
 from rest_framework.response import Response
@@ -20,8 +19,9 @@ from rest_framework.pagination import PageNumberPagination
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+# from django.contrib.auth.hashers import check_password
+
 from constants import DEJAVUSANS_PATH
-from django.contrib.auth.hashers import check_password
 
 pdfmetrics.registerFont(TTFont('DejaVuSans', DEJAVUSANS_PATH))
 
@@ -29,7 +29,6 @@ pdfmetrics.registerFont(TTFont('DejaVuSans', DEJAVUSANS_PATH))
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     @action(
             detail=False,
@@ -142,8 +141,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeCreateSerializer
         return RecipeShowSerializer
 
-    # def perform_create(self, serializer):
-    #     serializer.save(author=self.request.user)
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
     def perform_update(self, serializer):
         serializer.save()
@@ -152,33 +151,37 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=['post', 'delete'],
         detail=True,
         permission_classes=(IsAuthenticated,)
-    )
+    ) 
     def favorite(self, request, pk=None):
-        user = request.user
-        recipe = get_object_or_404(Recipe, id=pk)
-
+        user = self.request.user
+        if user.is_anonymous:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        recipe = get_object_or_404(Recipe, pk=pk)
         if request.method == 'POST':
-            favorite, created = Favorite.objects.get_or_create(user=user,
-                                                               recipe=recipe)
+            favorite, created = Favorite.objects.get_or_create(
+                user=user, recipe=recipe)
             if created:
-                serializer = FavoriteSerializer(favorite.recipe)
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED)
+                serializer = HelpCreateSerializer(favorite.recipe)
+                return Response(
+                    data=serializer.data, 
+                    status=status.HTTP_201_CREATED
+                )
             else:
-                return Response(data='Рецепт уже добавлен в избранное',
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         elif request.method == 'DELETE':
             favorites = Favorite.objects.filter(user=user, recipe=recipe)
-            if favorites.exists():
+            if favorites:
                 favorites.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
             else:
-                return Response(data='У вас этого рецепта нет в избанном',
-                                status=status.HTTP_404_NOT_FOUND)
+                data = {'errors': 'Такого рецепта нет в избранных.'}
+                return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(
-        detail=True,
         methods=['post', 'delete'],
+        detail=True,
         permission_classes=(IsAuthenticated,)
     )
     def shopping_cart(self, request, pk=None):
@@ -188,11 +191,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             shopping_cart, created = ShoppingCart.objects.get_or_create(
                 user=user, recipe=recipe)
             if created:
-                serializer = ShoppingCartSerializer(shopping_cart.recipe)
+                serializer = HelpCreateSerializer(shopping_cart.recipe)
                 return Response(serializer.data,
                                 status=status.HTTP_201_CREATED)
             else:
-                return Response(data='Рецепт уже добавлен в список покупок',
+                return Response(data='Рецепт уже добавлен в корзину',
                                 status=status.HTTP_400_BAD_REQUEST)
         elif request.method == 'DELETE':
             shopping_cart = ShoppingCart.objects.filter(user=user,
