@@ -135,6 +135,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
     pagination_class = PageNumberPagination
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if 'is_favorited' in self.request.query_params:
+            qs = qs.filter(favorites__user=self.request.user)
+        if 'is_in_shopping_cart' in self.request.query_params:
+            qs = qs.filter(shopping_cart__user=self.request.user)
+        return qs
+
     def get_serializer_class(self):
         if self.request.method == 'POST' or self.request.method == 'PATCH':
             return RecipeCreateSerializer
