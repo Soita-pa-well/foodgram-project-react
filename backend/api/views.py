@@ -5,7 +5,6 @@ from users.models import CustomUser, Subscription
 from api.serializers import (IngridientsSerializer, TagSerializer,
                              RecipeCreateSerializer, CustomUserSerializer,
                              RecipeShowSerializer, UserSubscriptionSerializer,
-                            # FavoriteSerializer, ShoppingCartSerializer,
                              PasswordSerializer, HelpCreateSerializer)
 from rest_framework.permissions import (AllowAny, IsAuthenticated)
 from rest_framework.decorators import action
@@ -151,7 +150,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=['post', 'delete'],
         detail=True,
         permission_classes=(IsAuthenticated,)
-    ) 
+    )
     def favorite(self, request, pk=None):
         user = self.request.user
         if user.is_anonymous:
@@ -163,7 +162,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if created:
                 serializer = HelpCreateSerializer(favorite.recipe)
                 return Response(
-                    data=serializer.data, 
+                    data=serializer.data,
                     status=status.HTTP_201_CREATED
                 )
             else:
