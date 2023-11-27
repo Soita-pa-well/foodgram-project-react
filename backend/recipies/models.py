@@ -1,9 +1,10 @@
+from constants import (COLOR_MAX_LENGTH, INGRIDIENT_MAX_LENHTH,
+                       MEAS_UNIT_MAX_LENHTH, RECIPE_MAX_LENGTH,
+                       SLUG_MAX_LENGTH, TAG_NAME_MAX_LENGTH)
 from django.db import models
-from users.models import CustomUser
 from django.db.models import UniqueConstraint
-from constants import (INGRIDIENT_MAX_LENHTH, MEAS_UNIT_MAX_LENHTH,
-                       TAG_NAME_MAX_LENGTH, COLOR_MAX_LENGTH, SLUG_MAX_LENGTH,
-                       RECIPE_MAX_LENGTH)
+from users.models import CustomUser
+
 from .validators import validate_cooking_time, validate_minimum_amount
 
 

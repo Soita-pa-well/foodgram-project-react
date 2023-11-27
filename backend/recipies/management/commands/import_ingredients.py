@@ -1,9 +1,8 @@
 import csv
 
-from django.core.management.base import BaseCommand
-
-from recipies.models import Ingredient
 from constants import CSV_PATH
+from django.core.management.base import BaseCommand
+from recipies.models import Ingredient
 
 
 class Command(BaseCommand):

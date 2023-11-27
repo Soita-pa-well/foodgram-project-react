@@ -1,5 +1,5 @@
+from constants import MINIMUM_AMOUNT, MINIMUM_COOKING_TIME
 from django.core.exceptions import ValidationError
-from constants import MINIMUM_COOKING_TIME, MINIMUM_AMOUNT
 
 
 def validate_cooking_time(value):

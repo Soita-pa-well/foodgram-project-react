@@ -1,7 +1,8 @@
-from django.contrib import admin
-from .models import (Ingredient, Tag, Recipe, ShoppingCart,
-                     Favorite, IngridientInRecipe, RecipeTag)
 from constants import EMPTY_VALUE
+from django.contrib import admin
+
+from .models import (Favorite, Ingredient, IngridientInRecipe, Recipe,
+                     RecipeTag, ShoppingCart, Tag)
 
 
 class IngredientInRecipeInline(admin.TabularInline):

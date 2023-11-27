@@ -1,26 +1,25 @@
-from rest_framework import viewsets, status, filters
-from recipies.models import (Ingredient, Tag, Recipe, Favorite,
-                             IngridientInRecipe, ShoppingCart)
-from users.models import CustomUser, Subscription
-from api.serializers import (IngridientsSerializer, TagSerializer,
-                             RecipeCreateSerializer, CustomUserSerializer,
-                             RecipeShowSerializer, UserSubscriptionSerializer,
-                             PasswordSerializer, HelpCreateSerializer)
-from rest_framework.permissions import (AllowAny, IsAuthenticated)
-from rest_framework.decorators import action
+from constants import DEJAVUSANS_PATH
 from django.http import HttpResponse
-from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from .filters import IngredientFilter, RecipeFilter
-from .permissions import IsOwnerOrAdminOrReadOnly
-from rest_framework.pagination import PageNumberPagination
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from recipies.models import (Favorite, Ingredient, IngridientInRecipe, Recipe,
+                             ShoppingCart, Tag)
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-# from django.contrib.auth.hashers import check_password
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from rest_framework import filters, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from users.models import CustomUser, Subscription
 
-from constants import DEJAVUSANS_PATH
+from api.serializers import (CustomUserSerializer, HelpCreateSerializer,
+                             IngridientsSerializer, PasswordSerializer,
+                             RecipeCreateSerializer, RecipeShowSerializer,
+                             TagSerializer, UserSubscriptionSerializer)
+from .filters import IngredientFilter, RecipeFilter
+from .permissions import IsOwnerOrAdminOrReadOnly
 
 pdfmetrics.registerFont(TTFont('DejaVuSans', DEJAVUSANS_PATH))
 
@@ -30,9 +29,9 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     serializer_class = CustomUserSerializer
 
     @action(
-            detail=False,
-            methods=['get'],
-            permission_classes=(IsAuthenticated,)
+        detail=False,
+        methods=['get'],
+        permission_classes=(IsAuthenticated,)
     )
     def me(self, request):
         user = CustomUser.objects.get(username=request.user.username)
@@ -40,9 +39,9 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
-            detail=False,
-            methods=['get'],
-            permission_classes=(IsAuthenticated,)
+        detail=False,
+        methods=['get'],
+        permission_classes=(IsAuthenticated,)
     )
     def subscriptions(self, request):
         queryset = CustomUser.objects.filter(
@@ -218,7 +217,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=False,
         methods=['get'],
         permission_classes=(IsAuthenticated,)
-        )
+    )
     def download_shopping_cart(self, request):
         self.response = HttpResponse(content_type='application/pdf')
         self.response[
