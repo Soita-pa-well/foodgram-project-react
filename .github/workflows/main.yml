@@ -58,7 +58,7 @@ jobs:
           script: |
             cd foodgram
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
-            sudo docker compose -f docker-compose.production.yml down
+            sudo docker compose -f docker-compose.production.yml stop
             sudo docker-compose rm backend
             touch .env 
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
