@@ -1,6 +1,7 @@
-from django.contrib import admin
-from .models import CustomUser, Subscription
 from constants import EMPTY_VALUE
+from django.contrib import admin
+
+from .models import CustomUser, Subscription
 
 
 @admin.register(CustomUser)

@@ -1,6 +1,7 @@
 import re
-from django.core.exceptions import ValidationError
+
 from constants import INVALID_SYMBOLS
+from django.core.exceptions import ValidationError
 
 
 def validate_username(value):
