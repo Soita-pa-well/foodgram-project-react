@@ -1,7 +1,6 @@
-# name: Foodgram workflow
+name: Foodgram workflow
 
 # on: [push]
-name: Main Taski Workflow
 # Перечень событий-триггеров, при которых должен запускаться workflow
 on:
   # Событие push возникает,
