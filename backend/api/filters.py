@@ -1,4 +1,5 @@
-from django_filters import BooleanFilter, CharFilter, FilterSet
+from django_filters import (BooleanFilter, CharFilter, FilterSet,
+                            ModelMultipleChoiceFilter)
 from recipies.models import Ingredient, Recipe, Tag
 
 
@@ -12,7 +13,7 @@ class IngredientFilter(FilterSet):
 
 class RecipeFilter(FilterSet):
     author = CharFilter()
-    tags = filter.ModelMultipleChoiceFilter(
+    tags = ModelMultipleChoiceFilter(
         field_name='tags__slug',
         queryset=Tag.objects.all(),
         label='Tags',
