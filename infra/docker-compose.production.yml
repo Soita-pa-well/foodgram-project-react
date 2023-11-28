@@ -24,7 +24,8 @@ services:
   frontend:
     image: soita/foodgram_frontend
     volumes:
-      - ../frontend/:/app/result_build/
+      - static:/app/result_build/build
+      # - ../frontend/:/app/result_build/
 
   nginx:
     image: nginx:1.19.3
