@@ -139,6 +139,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             if int(amount) < 1:
                 raise serializers.ValidationError('Количество ингредиента не '
                                                   'может быть меньше единицы!')
+        return data
 
     def get_ingredients(self, obj):
         ingredients = IngridientInRecipe.objects.filter(recipe=obj)
