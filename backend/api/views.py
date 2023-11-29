@@ -20,7 +20,7 @@ from api.serializers import (CustomUserSerializer, HelpCreateSerializer,
                              TagSerializer, UserSubscriptionSerializer)
 
 from .filters import IngredientFilter, RecipeFilter
-from .permissions import IsOwnerOrAdminOrReadOnly
+# from .permissions import IsOwnerOrAdminOrReadOnly
 
 pdfmetrics.registerFont(TTFont('DejaVuSans', DEJAVUSANS_PATH))
 
