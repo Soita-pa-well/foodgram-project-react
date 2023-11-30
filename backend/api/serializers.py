@@ -118,22 +118,41 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         fields = ('id', 'author', 'ingredients', 'tags', 'image', 'name',
                   'text', 'cooking_time')
 
-    def validate(self, data):
-        ingredients = data['ingredients_in_recipe']
-        ingredients_set = set()
+    # def validate(self, data):
+    #     ingredients = data['ingredients_in_recipe']
+    #     ingredients_set = set()
+    #     if not ingredients:
+    #         raise serializers.ValidationError(
+    #             'Необходимо добавить ингредиенты!')
+    #     for ingredient in ingredients:
+    #         if ingredient['id'] in ingredients_set:
+    #             raise serializers.ValidationError('У вас повторяются '
+    #                                               'ингредиенты')
+    #         ingredients_set.add(ingredient['id'])
+    #         amount = ingredient['amount']
+    #         if int(amount) < 1:
+    #             raise serializers.ValidationError('Количество ингредиента не '
+    #                                               'может быть меньше единицы!')
+    #     return data
+    def validate_ingredients(self, ingredients):
         if not ingredients:
-            raise serializers.ValidationError(
-                'Необходимо добавить ингредиенты!')
+            raise serializers.ValidationError('Необходимо добавить ингредиент')
+        ingredients_set = set()
         for ingredient in ingredients:
-            if ingredient['id'] in ingredients_set:
-                raise serializers.ValidationError('У вас повторяются '
-                                                  'ингредиенты')
-            ingredients_set.add(ingredient['id'])
-            amount = ingredient['amount']
-            if int(amount) < 1:
-                raise serializers.ValidationError('Количество ингредиента не '
-                                                  'может быть меньше единицы!')
-        return data
+            self.validate_unique_ingredient(ingredient['id'], ingredients_set)
+            self.validate_amount(ingredient['amount'])
+
+        return ingredients
+
+    def validate_unique_ingredient(self, ingredient_id, ingredients_set):
+        if ingredient_id in ingredients_set:
+            raise serializers.ValidationError('У вас повторяются ингредиенты')
+        ingredients_set.add(ingredient_id)
+
+    def validate_amount(self, amount):
+        if int(amount) < 1:
+            raise serializers.ValidationError('Количество ингредиента не может'
+                                              'быть меньше единицы!')
 
     def get_ingredients(self, obj):
         ingredients = IngridientInRecipe.objects.filter(recipe=obj)
