@@ -130,9 +130,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     #                                               'ингредиенты')
     #         ingredients_set.add(ingredient['id'])
     #         amount = ingredient['amount']
-    #         if int(amount) < 1:
-    #             raise serializers.ValidationError('Количество ингредиента не '
-    #                                               'может быть меньше единицы!')
+    #       if int(amount) < 1:
+    #          raise serializers.ValidationError('Количество ингредиента не '
+    #                                             'может быть меньше единицы!')
     #     return data
     def validate_ingredients(self, ingredients):
         if not ingredients:
