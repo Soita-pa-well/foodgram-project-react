@@ -1,6 +1,3 @@
-from constants import (COLOR_MAX_LENGTH, INGRIDIENT_MAX_LENHTH,
-                       MEAS_UNIT_MAX_LENHTH, RECIPE_MAX_LENGTH,
-                       SLUG_MAX_LENGTH, TAG_NAME_MAX_LENGTH)
 from django.db import models
 from django.db.models import UniqueConstraint
 from users.models import CustomUser
@@ -12,9 +9,9 @@ class Ingredient(models.Model):
     """Модель ингредиента"""
 
     name = models.CharField('Название ингредиента',
-                            max_length=INGRIDIENT_MAX_LENHTH)
+                            max_length=200)
     measurement_unit = models.CharField('Единицы измерения',
-                                        max_length=MEAS_UNIT_MAX_LENHTH)
+                                        max_length=20)
 
     class Meta:
         verbose_name = 'Ингредиент'
@@ -35,13 +32,13 @@ class Tag(models.Model):
     """Модель тега"""
 
     name = models.CharField('Название тега',
-                            max_length=TAG_NAME_MAX_LENGTH,
+                            max_length=200,
                             unique=True,)
     color = models.CharField('Цвет',
-                             max_length=COLOR_MAX_LENGTH,
+                             max_length=7,
                              unique=True,)
     slug = models.SlugField('Cлаг',
-                            max_length=SLUG_MAX_LENGTH,
+                            max_length=200,
                             unique=True)
 
     class Meta:
@@ -58,7 +55,7 @@ class Recipe(models.Model):
 
     tags = models.ManyToManyField(Tag,
                                   through='RecipeTag',
-                                  related_name='tags',
+                                  related_name='recipes',
                                   verbose_name='Теги')
     author = models.ForeignKey(CustomUser,
                                on_delete=models.CASCADE,
@@ -66,13 +63,12 @@ class Recipe(models.Model):
                                verbose_name='Автор рецепта')
     ingredients = models.ManyToManyField(Ingredient,
                                          through='IngridientInRecipe',
+                                         related_name='recipes',
                                          verbose_name='Ингредиенты')
     image = models.ImageField('Изображение рецепта',
-                              upload_to='recipies/images/',
-                              null=True,
-                              blank=True)
+                              upload_to='recipies/images/')
     name = models.CharField('Название рецепта',
-                            max_length=RECIPE_MAX_LENGTH)
+                            max_length=200)
     text = models.TextField('Описание рецепта')
     cooking_time = models.IntegerField('Время приготовления рецепта',
                                        blank=False,
@@ -95,11 +91,11 @@ class IngridientInRecipe(models.Model):
     recipe = models.ForeignKey(Recipe,
                                on_delete=models.CASCADE,
                                verbose_name='Рецепт',
-                               related_name='ingredient_in_recipe')
+                               related_name='ingredients_in_recipe')
     ingredient = models.ForeignKey(Ingredient,
                                    on_delete=models.CASCADE,
                                    verbose_name='Ингредиент',
-                                   related_name='ingredient_in_recipe')
+                                   related_name='ingredients_in_recipe')
     amount = models.IntegerField('Количество',
                                  validators=[validate_minimum_amount])
 
@@ -116,9 +112,11 @@ class RecipeTag(models.Model):
 
     recipe = models.ForeignKey(Recipe,
                                on_delete=models.CASCADE,
+                               related_name='recipe_tags',
                                verbose_name='Рецепт')
     tag = models.ForeignKey(Tag,
                             on_delete=models.CASCADE,
+                            related_name='recipe_tags',
                             verbose_name='Тег')
 
     class Meta:

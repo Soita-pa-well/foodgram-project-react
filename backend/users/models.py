@@ -1,26 +1,25 @@
-from constants import (EMAIL_MAX_LENGTH, FIRST_NAME_MAX_LENGTH,
-                       LAST_NAME_MAX_LENGTH, USERNAME_MAX_LENGTH)
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import UniqueConstraint
 
-from .validators import validate_username
+from .validators import validate_username, email_validator
 
 
 class CustomUser(AbstractUser):
     """Кастомная модель пользователя."""
 
     email = models.EmailField('Почта пользователя',
-                              max_length=EMAIL_MAX_LENGTH,
-                              unique=True)
+                              max_length=254,
+                              unique=True,
+                              validators=[email_validator])
     first_name = models.CharField('Имя пользователя',
-                                  max_length=FIRST_NAME_MAX_LENGTH,
+                                  max_length=150,
                                   blank=False)
     last_name = models.CharField('Фамилия пользователя',
-                                 max_length=LAST_NAME_MAX_LENGTH,
+                                 max_length=150,
                                  blank=False)
     username = models.CharField('Псевдоним пользователя',
-                                max_length=USERNAME_MAX_LENGTH,
+                                max_length=150,
                                 unique=True,
                                 validators=[validate_username])
     USERNAME_FIELD = 'email'
