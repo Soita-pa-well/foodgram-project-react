@@ -10,7 +10,8 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import (AllowAny, IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from users.models import CustomUser, Subscription
 
@@ -20,7 +21,7 @@ from api.serializers import (CustomUserSerializer, HelpCreateSerializer,
                              TagSerializer, UserSubscriptionSerializer)
 
 from .filters import IngredientFilter, RecipeFilter
-# from .permissions import IsOwnerOrAdminOrReadOnly
+from .permissions import IsOwnerOrAdminOrReadOnly
 
 pdfmetrics.registerFont(TTFont('DejaVuSans', DEJAVUSANS_PATH))
 
@@ -28,6 +29,7 @@ pdfmetrics.registerFont(TTFont('DejaVuSans', DEJAVUSANS_PATH))
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     @action(
         detail=False,
@@ -130,7 +132,7 @@ class TagViewSet(viewsets.ModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = (AllowAny,)
+    permission_classes = (IsOwnerOrAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = PageNumberPagination
