@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from recipies.models import Ingredient, IngridientInRecipe, Recipe, Tag
+from recipies.models import (Ingredient, IngridientInRecipe, Recipe, Tag,
+                             Favorite, ShoppingCart)
 from rest_framework import serializers
 from users.models import CustomUser, Subscription
 
@@ -73,8 +74,8 @@ class RecipeShowSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(required=False)
     ingredients = IngredientInRecipeSerializer(many=True,
                                                source='ingredients_in_recipe')
-    is_favorited = serializers.SerializerMethodField()
-    is_in_shopping_cart = serializers.SerializerMethodField()
+    is_favorited = serializers.SerializerMethodField(read_only=True)
+    is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     image = Base64ImageField()
 
     class Meta:
@@ -83,13 +84,25 @@ class RecipeShowSerializer(serializers.ModelSerializer):
                   'is_in_shopping_cart', 'name', 'image', 'text',
                   'cooking_time')
 
+    # def get_is_favorited(self, obj):
+    #     user = self.context.get('request').user
+    #     return (user.favorites.filter(recipe=obj).exists())
+
+    # def get_is_in_shopping_cart(self, obj):
+    #     user = self.context.get('request').user
+    #     return (user.shopping_cart.filter(recipe=obj).exists())
     def get_is_favorited(self, obj):
-        user = self.context.get('request').user
-        return (user.favorites.filter(recipe=obj).exists())
+        return self.obj_exists(obj, Favorite)
 
     def get_is_in_shopping_cart(self, obj):
-        user = self.context.get('request').user
-        return (user.shopping_cart.filter(recipe=obj).exists())
+        return self.obj_exists(obj, ShoppingCart)
+
+    def obj_exists(self, recipe, name_class):
+        request = self.context.get('request')
+        if not request or request.user.is_anonymous:
+            return False
+        return name_class.objects.filter(user=request.user,
+                                         recipe=recipe).exists()
 
 
 class IngredientInRecipeCreateSerializer(serializers.ModelSerializer):

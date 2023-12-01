@@ -1,3 +1,4 @@
+from colorfield.fields import ColorField
 from django.db import models
 from django.db.models import UniqueConstraint
 from users.models import CustomUser
@@ -34,9 +35,8 @@ class Tag(models.Model):
     name = models.CharField('Название тега',
                             max_length=200,
                             unique=True,)
-    color = models.CharField('Цвет',
-                             max_length=7,
-                             unique=True,)
+    color = ColorField(unique=True,
+                       verbose_name='Цвет тега')
     slug = models.SlugField('Cлаг',
                             max_length=200,
                             unique=True)

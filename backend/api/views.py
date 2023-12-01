@@ -94,7 +94,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     @action(
         detail=False,
         methods=['post'],
-        permission_classes=(AllowAny,)
+        permission_classes=(IsAuthenticated,)
     )
     def set_password(self, request, pk=None):
         user = self.request.user
