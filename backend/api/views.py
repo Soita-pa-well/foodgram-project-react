@@ -94,7 +94,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     @action(
         detail=False,
         methods=['post'],
-        permission_classes=(IsAuthenticated,)
+        permission_classes=(AllowAny,)
     )
     def set_password(self, request, pk=None):
         user = self.request.user
@@ -137,6 +137,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
     pagination_class = PageNumberPagination
 
+    # без переопределения метода у меня фильтр не работает по полям,
+    # которых нет в модели
     def get_queryset(self):
         qs = super().get_queryset()
         if 'is_favorited' in self.request.query_params:

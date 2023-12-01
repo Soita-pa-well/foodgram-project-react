@@ -30,6 +30,7 @@ class IngredientAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     """Модель Tag в админке."""
 
+    prepopulated_fields = {'slug': ('name',)}
     list_display = ('name', 'slug')
     search_fields = ('name',)
     list_filter = ('name', 'slug')
