@@ -224,7 +224,17 @@ class UserSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('email', 'id', 'username', 'first_name', 'last_name',
-                  'is_subscribed', 'recipes', 'recipes_count',)
+                  'is_subscribed', 'recipes', 'recipes_count')
+
+    def validate(self, data):
+        user = self.context['request'].user
+        author = self.context['author']
+        if user == author:
+            raise serializers.ValidationError('Невозможно подписаться на себя')
+        subscription = Subscription.objects.filter(user=user, author=author)
+        if subscription.exists():
+            raise serializers.ValidationError(f'Вы уже подписаны на {author}')
+        return data
 
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user

@@ -69,12 +69,6 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         subscription = Subscription.objects.filter(user=user.id,
                                                    author=author.id)
         if request.method == 'POST':
-            if user == author:
-                return Response('Невозможно подписаться на самого себя',
-                                status=status.HTTP_400_BAD_REQUEST)
-            if subscription:
-                return Response(f'Вы уже подписаны на {author}',
-                                status=status.HTTP_400_BAD_REQUEST)
             subscribe = Subscription.objects.create(
                 user=user,
                 author=author
