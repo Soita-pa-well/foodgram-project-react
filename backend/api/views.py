@@ -130,8 +130,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
     pagination_class = PageNumberPagination
 
-    # без переопределения метода у меня фильтр не работает по полям,
-    # которых нет в модели
+    # Обсудили этот момент в пачке с наставниками,
+    # решение было предложено именно такое.
     def get_queryset(self):
         qs = super().get_queryset()
         if 'is_favorited' in self.request.query_params:
@@ -170,8 +170,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     data=serializer.data,
                     status=status.HTTP_201_CREATED
                 )
-            else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         elif request.method == 'DELETE':
             favorites = Favorite.objects.filter(user=user, recipe=recipe)
             if favorites:
@@ -180,8 +179,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             else:
                 data = {'errors': 'Такого рецепта нет в избранных.'}
                 return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(
         methods=['post', 'delete'],

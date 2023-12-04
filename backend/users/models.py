@@ -2,7 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import UniqueConstraint
 
-from .validators import validate_username, email_validator
+from .managers import UserManager
+from .validators import email_validator, validate_username
 
 
 class CustomUser(AbstractUser):
@@ -24,6 +25,8 @@ class CustomUser(AbstractUser):
                                 validators=[validate_username])
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+
+    objects = UserManager()
 
     class Meta:
         verbose_name = 'Пользователь'
