@@ -10,8 +10,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import (AllowAny, IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+from rest_framework.permissions import (AllowAny, IsAuthenticated)
 from rest_framework.response import Response
 from users.models import CustomUser, Subscription
 
@@ -29,7 +28,7 @@ pdfmetrics.registerFont(TTFont('DejaVuSans', DEJAVUSANS_PATH))
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AllowAny,)
 
     @action(
         detail=False,
