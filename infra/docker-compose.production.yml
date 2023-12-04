@@ -13,7 +13,7 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    image: soita/foodgram_backend:latest
+    image: soita/foodgram_backend
     env_file: .env
     volumes:
       - static:/backend_static
@@ -22,7 +22,7 @@ services:
       - db 
 
   frontend:
-    image: soita/foodgram_frontend:latest
+    image: soita/foodgram_frontend
     volumes:
       - static:/app/result_build/build
 
