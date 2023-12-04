@@ -29,7 +29,6 @@ pdfmetrics.registerFont(TTFont('DejaVuSans', DEJAVUSANS_PATH))
 class CustomUserViewSet(UserViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = (AllowAny,)
 
     @action(
         detail=False,
@@ -66,8 +65,8 @@ class CustomUserViewSet(UserViewSet):
     def subscribe(self, request, pk):
         user = self.request.user
         author = get_object_or_404(CustomUser, id=pk)
-        subscription = Subscription.objects.filter(user=user.id,
-                                                   author=author.id)
+        subscription = Subscription.objects.filter(user=user,
+                                                   author=author)
         if request.method == 'POST':
             subscribe = Subscription.objects.create(
                 user=user,
