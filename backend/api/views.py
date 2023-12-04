@@ -2,6 +2,7 @@ from constants import DEJAVUSANS_PATH
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet
 from recipies.models import (Favorite, Ingredient, IngridientInRecipe, Recipe,
                              ShoppingCart, Tag)
 from reportlab.pdfbase import pdfmetrics
@@ -25,7 +26,7 @@ from .permissions import IsOwnerOrAdminOrReadOnly
 pdfmetrics.registerFont(TTFont('DejaVuSans', DEJAVUSANS_PATH))
 
 
-class CustomUserViewSet(viewsets.ModelViewSet):
+class CustomUserViewSet(UserViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = (AllowAny,)
