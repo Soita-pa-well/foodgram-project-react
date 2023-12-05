@@ -1,7 +1,5 @@
 from constants import EMPTY_VALUE
 from django.contrib import admin
-from django.utils.html import format_html
-from django.urls import reverse
 
 from .models import (Favorite, Ingredient, IngridientInRecipe, Recipe,
                      RecipeTag, ShoppingCart, Tag)
@@ -50,11 +48,9 @@ class RecipeAdmin(admin.ModelAdmin):
     inlines = (IngredientInRecipeInline, RecipeTagInLine)
     empty_value_display = EMPTY_VALUE
 
-    @admin.display(description='Favorites Count')
+    @admin.display(description='Избранное')
     def count_favorites(self, obj):
-        favorites_count = obj.favorites.count()
-        url = reverse('admin:foodgram_recipe', args=[obj.id])
-        return format_html('<a href="{}">{}</a>', url, favorites_count)
+        return obj.favorites.count()
 
 
 @admin.register(ShoppingCart)
