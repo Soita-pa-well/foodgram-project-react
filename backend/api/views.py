@@ -172,13 +172,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 )
             return Response(status=status.HTTP_400_BAD_REQUEST)
         elif request.method == 'DELETE':
-            favorites = Favorite.objects.filter(user=user, recipe=recipe)
-            if favorites:
-                favorites.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-            else:
+            favorites = Favorite.objects.filter(user=user,
+                                                recipe=recipe).delete()
+            if favorites[0] == 0:
                 data = {'errors': 'Такого рецепта нет в избранных.'}
                 return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(
@@ -205,9 +204,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if shopping_cart.exists():
                 shopping_cart.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
-            else:
-                return Response(data='Этого рецепта нет в списке покупок',
-                                status=status.HTTP_404_NOT_FOUND)
+            return Response(data='Этого рецепта нет в списке покупок',
+                            status=status.HTTP_404_NOT_FOUND)
 
     @action(
         detail=False,
