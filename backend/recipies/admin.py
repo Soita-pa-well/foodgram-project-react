@@ -43,8 +43,8 @@ class TagAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
     """Модель Recipe в админке."""
 
-    list_display = ('name', 'author',
-                    'text', 'cooking_time', 'pub_date')
+    list_display = ('name', 'author', 'text', 'cooking_time',
+                    'pub_date', 'count_favorites')
     search_fields = ('name', 'author', 'tags', 'ingridients')
     list_filter = ('author', 'name', 'tags')
     inlines = (IngredientInRecipeInline, RecipeTagInLine)

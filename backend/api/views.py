@@ -124,15 +124,16 @@ class TagViewSet(viewsets.ModelViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.select_related('author') \
-        .prefetch_related('tags', 'ingredients')
+    queryset = (
+        Recipe.objects
+        .select_related('author')
+        .prefetch_related('tags', 'ingredients_in_recipe')
+    )
     permission_classes = (IsOwnerOrAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = PageNumberPagination
 
-    # Обсудили этот момент в пачке с наставниками,
-    # решение было предложено именно такое.
     def get_queryset(self):
         qs = super().get_queryset()
         if 'is_favorited' in self.request.query_params:
@@ -196,9 +197,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 serializer = HelpCreateSerializer(shopping_cart.recipe)
                 return Response(serializer.data,
                                 status=status.HTTP_201_CREATED)
-            else:
-                return Response(data='Рецепт уже добавлен в корзину',
-                                status=status.HTTP_400_BAD_REQUEST)
+            return Response(data='Рецепт уже добавлен в корзину',
+                            status=status.HTTP_400_BAD_REQUEST)
         elif request.method == 'DELETE':
             shopping_cart = ShoppingCart.objects.filter(user=user,
                                                         recipe=recipe)
