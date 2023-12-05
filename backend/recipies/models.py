@@ -55,15 +55,12 @@ class Recipe(models.Model):
 
     tags = models.ManyToManyField(Tag,
                                   through='RecipeTag',
-                                  related_name='recipes',
                                   verbose_name='Теги')
     author = models.ForeignKey(CustomUser,
                                on_delete=models.CASCADE,
-                               related_name='recipes',
                                verbose_name='Автор рецепта')
     ingredients = models.ManyToManyField(Ingredient,
                                          through='IngridientInRecipe',
-                                         related_name='recipes',
                                          verbose_name='Ингредиенты')
     image = models.ImageField('Изображение рецепта',
                               upload_to='recipies/images/',
@@ -81,6 +78,7 @@ class Recipe(models.Model):
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         ordering = ['-pub_date']
+        default_related_name = 'recipes'
 
     def __str__(self):
         return self.name
